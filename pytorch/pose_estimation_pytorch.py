@@ -1,13 +1,14 @@
 import time
-import torch
 import cv2 as cv
-import numpy as np
 import torchvision
+import numpy as np
 import matplotlib.pyplot as plt
-from torchvision import transforms as T
+import matplotlib.colors as colors
+import torchvision.transforms  as T
 
 
 cap = cv.VideoCapture("https://assets.mixkit.co/videos/preview/mixkit-two-couples-walking-near-a-cabin-in-the-woods-42730-large.mp4")
+# cap = cv.VideoCapture("../../Media/dance.mp4")
 
 # create a model object from the keypointrcnn_resnet50_fpn class
 model = torchvision.models.detection.keypointrcnn_resnet50_fpn(pretrained=True)
@@ -60,7 +61,7 @@ def get_limbs_from_keypoints(keypoints):
     return limbs
 
 
-# limbs = get_limbs_from_keypoints(keypoints)
+edges = get_limbs_from_keypoints(keypoints)
 
 def preprocessing(img):
     img_tensor = transform(img)
@@ -68,7 +69,6 @@ def preprocessing(img):
     # the input is a list, hence the output will also be a list
     output = model([img_tensor])[0]
     return output
-
 
 
 def draw_keypoints_per_person(img, all_keypoints, all_scores, confs, keypoint_threshold=2, conf_threshold=0.9):
@@ -99,6 +99,34 @@ def draw_keypoints_per_person(img, all_keypoints, all_scores, confs, keypoint_th
 
     return img_copy
 
+def draw_keypoints(outputs, image):
+    # the `outputs` is list which in-turn contains the dictionaries
+    for i in range(len(outputs['keypoints'])):
+        keypoints = outputs['keypoints'][i].cpu().detach().numpy()
+        # proceed to draw the lines if the confidence score is above 0.9
+        if outputs['scores'][i] > 0.9:
+            keypoints = keypoints[:, :].reshape(-1, 3)
+            for p in range(keypoints.shape[0]):
+                # draw the keypoints
+                cv.circle(image, (int(keypoints[p, 0]), int(keypoints[p, 1])), 
+                            3, (0, 0, 255), thickness=-1, lineType=cv.FILLED)
+            for ie, e in enumerate(edges):
+                # get different colors for the edges
+                rgb = colors.hsv_to_rgb([
+                    ie/float(len(edges)), 1.0, 1.0
+                ])
+                rgb = rgb*255
+                # join the keypoint pairs to draw the skeletal structure
+                cv.line(
+                    image, 
+                    (int(keypoints[e, 0][0]), int(keypoints[e, 1][0])),
+                    (int(keypoints[e, 0][1]), int(keypoints[e, 1][1])), 
+                    tuple(rgb), 2, lineType=cv.LINE_AA
+                )
+        else:
+            continue
+    return image
+
 while cap.isOpened():
     # Capture frame-by-frame
     success, image = cap.read()
@@ -112,9 +140,9 @@ while cap.isOpened():
     # Starting time for the process
     t1 = time.time()
     # Send this image to the model
-    # results = pose.process(image)
     output = preprocessing(image)
-    keypoints_img = draw_keypoints_per_person(image, output["keypoints"], output["keypoints_scores"], output["scores"],keypoint_threshold=2)
+    keypoints_img = draw_keypoints(output, image)
+    #keypoints_img = draw_keypoints_per_person(image, output["keypoints"], output["keypoints_scores"], output["scores"],keypoint_threshold=2)
     # Ending time for the process
     t2 = time.time()
     # Number of frames that appears within a second
