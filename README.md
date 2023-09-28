@@ -6,5 +6,3 @@ YOLOv8 pretrained Pose models, Detect, Segment and Pose models are pretrained on
 
 ### Multi Pose Estimation with PyTorch Keypoint RCNN
 PyTorch provides a pre-trained Keypoint RCNN model with ResNet50 base which has been trained on the COCO keypoint dataset. Keypoint RCNN is an algorithm for finding keypoints on images containing a human.
-https://debuggercafe.com/human-pose-detection-using-pytorch-keypoint-rcnn/
-https://learnopencv.com/human-pose-estimation-using-keypoint-rcnn-in-pytorch/#overview
