@@ -7,9 +7,16 @@ YOLOv8 pretrained Pose models, Detect, Segment and Pose models are pretrained on
 
 #### How to test the script
 
+The command bellow will do a pose estimation on a default image
 ```
 cd yolov8
 python pose_estimation_yolov8.py
+```
+
+The command bellow will do a pose estimation on a given video path
+```
+cd yolov8
+python pose_estimation_yolov8.py --input "../media/videos/people-walk.mp4"
 ```
 
 ### Multi Pose Estimation with PyTorch Keypoint RCNN
