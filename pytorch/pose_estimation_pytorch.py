@@ -1,12 +1,12 @@
 import time
 import cv2 as cv
-import torchvision
 import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 import torchvision.transforms  as T
-from torchvision.models.detection import keypointrcnn_resnet50_fpn, KeypointRCNN_ResNet50_FPN_Weights
+from torchvision.models.detection import (keypointrcnn_resnet50_fpn, 
+                                          KeypointRCNN_ResNet50_FPN_Weights)
 
 
 class PoseEstimation:
@@ -61,7 +61,7 @@ class PoseEstimation:
         output = self.model([img_tensor])[0]
         return output
 
-    def draw_keypoints_per_person(self, img, all_keypoints, all_scores, 
+    def draw_keypoints_per_person(self, img, all_keypoints, scores, 
                                   confs, keypoint_threshold=2, conf_threshold=0.9):
         edges = self.get_limbs_from_keypoints()
         # initialize a set of colors from the rainbow spectrum
@@ -89,11 +89,9 @@ class PoseEstimation:
                     # pick the start-point of the limb
                     limb_loc2 = keypoints[edges[limb_id][1], :2].detach().numpy().astype(np.int32)
                     # consider limb-confidence score as the minimum keypoint score among the two keypoint scores
-                    limb_score = min(all_scores[person_id, edges[limb_id][0]], all_scores[person_id, edges[limb_id][1]])
+                    limb_score = min(scores[person_id, edges[limb_id][0]], scores[person_id, edges[limb_id][1]])
                     # check if limb-score is greater than threshold
                     if limb_score> keypoint_threshold:
-                        # pick the color at a specific color-id
-                        color = tuple(np.asarray(cmap(color_id[person_id])[:-1])*255)
                         # draw the line for the limb
                         cv.line(img_copy, tuple(limb_loc1), tuple(limb_loc2), tuple(rgb), 2, cv.LINE_AA)
 
@@ -172,7 +170,7 @@ class PoseEstimation:
             # display the FPS
             cv.putText(image, 'FPS : {:.2f}'.format(fps), (int((image.shape[1] * 75) /100), 40), 
                        cv.FONT_HERSHEY_SIMPLEX, 1, (188, 205, 54), 2, cv.LINE_AA)
-            cv.imshow("Human pose estimation with RCNN", keypoints_img)
+            cv.imshow("Human pose estimation with Kypoint RCNN", keypoints_img)
             if cv.waitKey(10) & 0XFF == ord('q'):
                 break
         # Release everything if job is finished
