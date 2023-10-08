@@ -1,6 +1,7 @@
-/yolov8/yolov8n-pose.pt
+/yolov8/yolov8n_pose.pt
 /pytorch/keypoint_rcnn.onnx
 /pytorch/test.py
 /openvino/model_download.py
 /openvino/utils.py
 openvino/__pycache__
+/openvino/model/

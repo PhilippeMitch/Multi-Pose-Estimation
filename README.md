@@ -28,3 +28,5 @@ PyTorch provides a pre-trained Keypoint RCNN model with ResNet50 base which has 
 cd pytorch
 python pose_estimation_pytorch.py
 ```
+### Multi Pose Estimation with OpenVino
+In progress ...

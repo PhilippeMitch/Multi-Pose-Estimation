@@ -68,7 +68,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     pose_estimation = PoseEstimation(args)
 
-    model = YOLO('yolov8n-pose.pt')
+    model = YOLO('yolov8n_pose.pt')
 
     if args.input.endswith(('.jpg', '.jpeg', '.png')):
         pose_estimation._image_estimation(model)
