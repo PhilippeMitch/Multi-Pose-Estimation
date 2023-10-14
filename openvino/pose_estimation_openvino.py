@@ -157,7 +157,7 @@ def run_pose_estimation(source=0, use_popup=False):
             pafs = results[pafs_output_key]
             heatmaps = results[heatmaps_output_key]
             # Get poses from network results.
-            poses, scores = process_results(frame, pafs, heatmaps)
+            poses, _ = process_results(frame, pafs, heatmaps)
 
             # Draw poses on a frame.
             frame = draw_poses(frame, poses, 0.1)
@@ -194,6 +194,6 @@ def run_pose_estimation(source=0, use_popup=False):
 
 
 
-video_file = "https://github.com/intel-iot-devkit/sample-videos/blob/master/store-aisle-detection.mp4?raw=true"
+video_file = "../media/videos/people-walk.mp4"
 
 run_pose_estimation(video_file,  use_popup=True)

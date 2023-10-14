@@ -155,6 +155,10 @@ class PoseEstimation:
             if not success:
                 print("Frame not found!!")
                 break
+            # If the frame is larger than full HD, reduce size to improve the performance.
+            scale = 1280 / max(image.shape)
+            if scale < 1:
+                image = cv.resize(image, None, fx=scale, fy=scale, interpolation=cv.INTER_AREA)
             # To improve performance, optionally mark the image as immutable to
             # pass by reference.
             image.flags.writeable = False
